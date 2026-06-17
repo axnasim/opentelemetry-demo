@@ -59,3 +59,4 @@ src/shipping/target/
 test/tracetesting/tracetesting-vars.yaml
 
 !src/currency/build
+src/telemetry-docs/Dockerfile.20260615135350

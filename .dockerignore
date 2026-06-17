@@ -22,3 +22,11 @@ src/*/*/Dockerfile
 ./src/shipping/target
 ###################################
 
+**/build/
+!src/currency/build/
+!src/currency/build/**
+**/.gradle/
+**/node_modules/
+**/.venv/
+**/*.jpg
+**/*.png

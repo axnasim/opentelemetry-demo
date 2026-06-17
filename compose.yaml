@@ -759,7 +759,7 @@ services:
     ports:
       - "${FLAGD_UI_PORT}"
     healthcheck:
-      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/${FLAGD_UI_PORT}"]
+      test: ["CMD-SHELL", "nc -z localhost ${FLAGD_UI_PORT}"]
       start_period: 10s
       interval: 5s
       timeout: 5s

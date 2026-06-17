@@ -6,7 +6,21 @@
 # Stage 1: Generate Markdown files from telemetry schema using Weaver
 FROM docker.io/otel/weaver:v0.23.0@sha256:7984ecb55b859eb3034ae9d836c4eeda137e2bdd0873b7ba2bb6c3d24d6ff457 AS registry-builder
 
+# Switch to root temporarily to configure workspace permissions
+USER root
+
 WORKDIR /workspace
+
+# Create the target directory AND make sure the home cache directory belongs to weaver
+RUN mkdir -p /workspace/docs /home/weaver/.weaver && \
+    chown -R 10001:10001 /workspace /workspace/docs /home/weaver
+
+# Switch back to the safe non-root weaver user
+USER 10001
+
+# FORCE Weaver to look into our writeable workspace for its cache files
+ENV XDG_CACHE_HOME=/workspace/.cache
+ENV HOME=/workspace
 
 # Copy the telemetry schema
 COPY telemetry-schema /workspace/telemetry-schema
@@ -27,6 +41,8 @@ RUN /weaver/weaver registry package \
     --resolved-schema-uri=https://opentelemetry.io/schemas/1.40.0 \
     --output=/workspace/docs/schema \
     --v2
+
+# ... (Leave Stage 2 and Stage 3 exactly as they are) ...
 
 # Stage 2: Build static site
 FROM docker.io/library/python:3.14.5-slim-bookworm@sha256:a9bee15510a364124aa24692899d269835683b883de42f7ebec8c293cf679ccb AS site-builder

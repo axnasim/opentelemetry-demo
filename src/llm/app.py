@@ -53,6 +53,8 @@ def load_product_review_summaries(file_path):
         app.logger.error(f"Error: Failed to decode JSON from the file '{product_review_summaries_file_path}'. Check for malformed JSON.")
     except Exception as e:
         app.logger.error(f"An unexpected error occurred: {e}")
+    # Ensure an empty dictionary is returned on any failure to prevent AttributeError later
+    return {}
 
 
 def generate_response(product_id):
@@ -70,7 +72,7 @@ def generate_response(product_id):
 
     app.logger.info(f"product_review_summary is: {product_review_summary}")
 
-    return product_review_summary
+    return product_review_summary or "No summary available for this product."
 
 def parse_product_id(last_message):
     match = re.search(r"product ID:([A-Z0-9]+)", last_message)
